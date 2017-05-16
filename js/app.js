@@ -1,5 +1,6 @@
 // Enemies our player must avoid
-var Enemy = function(row, speed) {
+'use strict';
+var Enemy = function(row) {
     // Variables applied to each of our instances go here,
     // we've provided one for you to get started
 
@@ -7,8 +8,8 @@ var Enemy = function(row, speed) {
     // a helper we've provided to easily load images
     this.sprite = 'images/enemy-bug.png';
     this.x = -100;
-    this.y = row / 6 * 506 - 25;
-    this.speed = speed * getRandomInt(1,10);
+    this.y = row * 84 - 25;
+    this.speed = getRandomInt(10, 20) * getRandomInt(1,10);
 };
 
 // Update the enemy's position, required method for game
@@ -22,7 +23,12 @@ Enemy.prototype.update = function(dt) {
     } else {
         this.x = this.x + this.speed * dt;
     }
-};
+
+    if (this.x >= player.x - 70 && this.x <= player.x + 70 && this.y >= player.y - 10 && this.y <= player.y + 10) {
+        console.log("YOU LOSE");
+        player.reset();
+    }
+} ;
 
 // Draw the enemy on the screen, required method for game
 Enemy.prototype.render = function() {
@@ -41,32 +47,47 @@ Enemy.prototype.render = function() {
 var Player = function() {
     this.sprite = 'images/char-boy.png';
     this.x = 202;
-    this.y = 404;
-}
+    this.y = 395;
+};
 
-Player.prototype.handleInput = function(input) {
-    this.keyPress = input;
-}
+Player.prototype.reset = function(){
+    this.x = 202;
+    this.y = 395;
+};
 
 Player.prototype.update = function() {
-    if (this.keyPress === 'left'){
-        if (this.x > 0){
+
+};
+ 
+Player.prototype.handleInput = function (key) {
+    switch (key) {
+    case 'left':
+        if (this.x > 0) {
             this.x -= 101;
         }
-    } else if (this.keyPress === 'up'){
-        if (this.y > 0){
-            this.y -= 101;
-        }
-    } else if (this.keyPress === 'right'){
-        if (this.x < 404){
+        break;
+    case 'right':
+        if (this.x < 404) {
             this.x += 101;
         }
-    } else if (this.keyPress === 'down'){
-        if (this.y < 404){
-            this.y += 101;
+        break;
+    case 'up':
+        if (this.y > 0) {
+            this.y -= 84;
+            if (this.y < 59) {
+                console.log("YOU WIN");
+                this.reset();
+            }
         }
+        break;
+    case 'down':
+        if (this.y < 395) {
+            this.y += 84;
+        }
+        break;
     }
-}
+};
+
 Player.prototype.render = function(){
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
@@ -80,15 +101,10 @@ function getRandomInt(min, max) {
 
 var allEnemies = [];
 var player = new Player();
-var getEnemies = function() {
-    for (var i = 1; i < 5; i++){
-        allEnemies.push(new Enemy(i, getRandomInt(10, 20)))
-    }
+for (var i = 1; i < 5; i++){
+    allEnemies.push(new Enemy(i));
 }
-getEnemies();
-getEnemies();
-
-
+    
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
 document.addEventListener('keyup', function(e) {
