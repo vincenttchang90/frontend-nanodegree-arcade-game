@@ -1,11 +1,7 @@
-// Enemies our player must avoid
 'use strict';
-var Enemy = function(row) {
-    // Variables applied to each of our instances go here,
-    // we've provided one for you to get started
 
-    // The image/sprite for our enemies, this uses
-    // a helper we've provided to easily load images
+// Enemy sprite
+var Enemy = function(row) {
     this.sprite = 'images/enemy-bug.png';
     this.x = -100;
     this.y = row * 84 - 25;
@@ -35,30 +31,23 @@ Enemy.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
-// Now write your own player class
-// This class requires an update(), render() and
-// a handleInput() method.
-
-
-// Now instantiate your objects.
-// Place all enemy objects in an array called allEnemies
-// Place the player object in a variable called player
-
+// Player sprite
 var Player = function() {
     this.sprite = 'images/char-boy.png';
     this.x = 202;
     this.y = 395;
 };
 
+// Resets player to starting position
 Player.prototype.reset = function(){
     this.x = 202;
     this.y = 395;
 };
 
-Player.prototype.update = function() {
-
-};
+// Not needed
+Player.prototype.update = function(){};
  
+// Player movement and boundries. Also reset if you win.
 Player.prototype.handleInput = function (key) {
     switch (key) {
     case 'left':
@@ -88,17 +77,19 @@ Player.prototype.handleInput = function (key) {
     }
 };
 
+// Draws the player
 Player.prototype.render = function(){
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
+// Random Int helper function
 function getRandomInt(min, max) {
   min = Math.ceil(min);
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min)) + min;
 }
 
-
+// Creates one enemy for each line with random speed
 var allEnemies = [];
 var player = new Player();
 for (var i = 1; i < 5; i++){
